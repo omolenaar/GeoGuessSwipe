@@ -54,8 +54,10 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             Toast op = Toast.makeText(getApplicationContext(),"This is the last item", Toast.LENGTH_LONG);
                             op.show();
+                            for (int i = 0; i < GeoObject.PRE_DEFINED_GEO_OBJECT_IMAGE_IDS.length; i++)
+                                mGeoObjects.add(new GeoObject(GeoObject.PRE_DEFINED_GEO_OBJECT_IMAGE_IDS[i]));
                         }
-                    }
+                        GeoObjectAdapter mAdapter = new GeoObjectAdapter(getApplicationContext(), mGeoObjects);         }
                 };
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
