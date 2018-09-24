@@ -19,6 +19,22 @@ public class GeoObjectAdapter extends RecyclerView.Adapter<GeoObjectViewHolder>{
         this.listGeoObject = listGeoObject;
     }
 
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
+    public List<GeoObject> getListGeoObject() {
+        return listGeoObject;
+    }
+
+    public void setListGeoObject(List<GeoObject> listGeoObject) {
+        this.listGeoObject = listGeoObject;
+    }
+
     @NonNull
     @Override
     public GeoObjectViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
