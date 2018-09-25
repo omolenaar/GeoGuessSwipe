@@ -62,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                         GeoObjectAdapter mAdapter = new GeoObjectAdapter(getApplicationContext(), mGeoObjects);
                     }
-
                 };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(mGeoRecyclerView);
@@ -74,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
         leftSwipe=0;
         rightSwipe=0;
     }
-
 }
 
 
