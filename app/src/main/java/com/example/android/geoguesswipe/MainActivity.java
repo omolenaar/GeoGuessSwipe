@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-//import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -20,7 +19,6 @@ public class MainActivity extends AppCompatActivity {
     private int rightSwipe=0;
     private int leftSwipe=0;
     String toastText="Toast";
-//    private static final String TAG = "MyActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
