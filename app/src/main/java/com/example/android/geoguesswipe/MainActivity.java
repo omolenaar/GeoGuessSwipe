@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.widget.Toast;
@@ -47,12 +46,9 @@ public class MainActivity extends AppCompatActivity {
                         int position = (viewHolder.getAdapterPosition());
                         mGeoObjects.remove(position);
                         mAdapter.notifyItemRangeRemoved(position, 1);
-                        //position = viewHolder.getOldPosition();
                         int nrOfItems = mAdapter.getItemCount();
-                        if (nrOfItems > 0) {
-                            mAdapter.notifyItemRangeRemoved(position, 1);
-                        } else {
-                            Toast op = Toast.makeText(getApplicationContext(),"This is the last item", Toast.LENGTH_LONG);
+                        if (nrOfItems == 0) {
+                            Toast op = Toast.makeText(getApplicationContext(),"This was the last item; starting over", Toast.LENGTH_LONG);
                             op.show();
                             for (int i = 0; i < GeoObject.PRE_DEFINED_GEO_OBJECT_IMAGE_IDS.length; i++)
                                 mGeoObjects.add(new GeoObject(GeoObject.PRE_DEFINED_GEO_OBJECT_IMAGE_IDS[i]));
