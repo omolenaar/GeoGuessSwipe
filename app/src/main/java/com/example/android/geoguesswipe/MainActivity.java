@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+//import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -18,7 +19,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mGeoRecyclerView;
     private int rightSwipe=0;
     private int leftSwipe=0;
-    String toastText="";
+    String toastText="Toast";
+//    private static final String TAG = "MyActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         final List<GeoObject> mGeoObjects = new ArrayList<>();
-
         for (int i = 0; i < GeoObject.PRE_DEFINED_GEO_OBJECT_IMAGE_IDS.length; i++)
             mGeoObjects.add(new GeoObject(GeoObject.PRE_DEFINED_GEO_OBJECT_IMAGE_IDS[i]));
 
@@ -34,11 +35,10 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getApplicationContext(), 1);
         mGeoRecyclerView.setLayoutManager(mLayoutManager);
         final GeoObjectAdapter mAdapter = new GeoObjectAdapter(this, mGeoObjects);
-        final int nrOfItems = mAdapter.getItemCount();
         mGeoRecyclerView.setAdapter(mAdapter);
 
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallbackR =
-                new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT ) {
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback =
+                new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
                     @Override
                     public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                         return false;
@@ -46,53 +46,36 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                        rightSwipe = rightSwipe + 1;
+                        if (direction == 8) {
+                            rightSwipe = rightSwipe + 1;
+                        } else {
+                            leftSwipe = leftSwipe + 1;
+                        }
                         int position = (viewHolder.getAdapterPosition());
                         mGeoObjects.remove(position);
                         mAdapter.notifyItemRangeRemoved(position, 1);
                         int nrOfItems = mAdapter.getItemCount();
                         if (nrOfItems == 0) {
-                            toastText = "Left: "+leftSwipe+", Right: "+rightSwipe+". Starting over";
-                            Toast op = Toast.makeText(getApplicationContext(),toastText, Toast.LENGTH_LONG);
-                            op.show();
+                            startOver();
                             for (int i = 0; i < GeoObject.PRE_DEFINED_GEO_OBJECT_IMAGE_IDS.length; i++)
                                 mGeoObjects.add(new GeoObject(GeoObject.PRE_DEFINED_GEO_OBJECT_IMAGE_IDS[i]));
-                            leftSwipe=0;
-                            rightSwipe=0;
                         }
-                        GeoObjectAdapter mAdapter = new GeoObjectAdapter(getApplicationContext(), mGeoObjects);         }
-                };
-
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallbackL =
-                new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-                    @Override
-                    public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                        return false;
+                        GeoObjectAdapter mAdapter = new GeoObjectAdapter(getApplicationContext(), mGeoObjects);
                     }
 
-                    @Override
-                    public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                        leftSwipe = leftSwipe+1;
-                        int position = (viewHolder.getAdapterPosition());
-                        mGeoObjects.remove(position);
-                        mAdapter.notifyItemRangeRemoved(position, 1);
-                        int nrOfItems = mAdapter.getItemCount();
-                        if (nrOfItems == 0) {
-                            toastText = "Left: "+leftSwipe+", Right: "+rightSwipe+". Starting over";
-                            Toast op = Toast.makeText(getApplicationContext(),toastText, Toast.LENGTH_LONG);
-                            op.show();
-                            leftSwipe=0;
-                            rightSwipe=0;
-                            for (int i = 0; i < GeoObject.PRE_DEFINED_GEO_OBJECT_IMAGE_IDS.length; i++)
-                                mGeoObjects.add(new GeoObject(GeoObject.PRE_DEFINED_GEO_OBJECT_IMAGE_IDS[i]));
-                        }
-                        GeoObjectAdapter mAdapter = new GeoObjectAdapter(getApplicationContext(), mGeoObjects);         }
                 };
-
-        ItemTouchHelper itemTouchHelperL = new ItemTouchHelper(simpleItemTouchCallbackL);
-        ItemTouchHelper itemTouchHelperR = new ItemTouchHelper(simpleItemTouchCallbackR);
-        itemTouchHelperL.attachToRecyclerView(mGeoRecyclerView);
-        itemTouchHelperR.attachToRecyclerView(mGeoRecyclerView);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(mGeoRecyclerView);
+    }
+    private void startOver() {
+        toastText = "Europe: "+leftSwipe+", Not  Europe: "+rightSwipe+". Starting over";
+        Toast finished = Toast.makeText(getApplicationContext(),toastText, Toast.LENGTH_LONG);
+        finished.show();
+        leftSwipe=0;
+        rightSwipe=0;
     }
 
 }
+
+
+
