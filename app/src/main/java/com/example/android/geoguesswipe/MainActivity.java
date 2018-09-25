@@ -16,6 +16,9 @@ public class MainActivity extends AppCompatActivity {
     private List<GeoObject> mGeoObjects;
     private GeoObjectAdapter mAdapter;
     private RecyclerView mGeoRecyclerView;
+    private int rightSwipe=0;
+    private int leftSwipe=0;
+    String toastText="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +37,8 @@ public class MainActivity extends AppCompatActivity {
         final int nrOfItems = mAdapter.getItemCount();
         mGeoRecyclerView.setAdapter(mAdapter);
 
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallback =
-                new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallbackR =
+                new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT ) {
                     @Override
                     public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                         return false;
@@ -43,21 +46,53 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                        rightSwipe = rightSwipe + 1;
                         int position = (viewHolder.getAdapterPosition());
                         mGeoObjects.remove(position);
                         mAdapter.notifyItemRangeRemoved(position, 1);
                         int nrOfItems = mAdapter.getItemCount();
                         if (nrOfItems == 0) {
-                            Toast op = Toast.makeText(getApplicationContext(),"This was the last item; starting over", Toast.LENGTH_LONG);
+                            toastText = "Left: "+leftSwipe+", Right: "+rightSwipe+". Starting over";
+                            Toast op = Toast.makeText(getApplicationContext(),toastText, Toast.LENGTH_LONG);
                             op.show();
+                            for (int i = 0; i < GeoObject.PRE_DEFINED_GEO_OBJECT_IMAGE_IDS.length; i++)
+                                mGeoObjects.add(new GeoObject(GeoObject.PRE_DEFINED_GEO_OBJECT_IMAGE_IDS[i]));
+                            leftSwipe=0;
+                            rightSwipe=0;
+                        }
+                        GeoObjectAdapter mAdapter = new GeoObjectAdapter(getApplicationContext(), mGeoObjects);         }
+                };
+
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallbackL =
+                new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+                    @Override
+                    public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                        return false;
+                    }
+
+                    @Override
+                    public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                        leftSwipe = leftSwipe+1;
+                        int position = (viewHolder.getAdapterPosition());
+                        mGeoObjects.remove(position);
+                        mAdapter.notifyItemRangeRemoved(position, 1);
+                        int nrOfItems = mAdapter.getItemCount();
+                        if (nrOfItems == 0) {
+                            toastText = "Left: "+leftSwipe+", Right: "+rightSwipe+". Starting over";
+                            Toast op = Toast.makeText(getApplicationContext(),toastText, Toast.LENGTH_LONG);
+                            op.show();
+                            leftSwipe=0;
+                            rightSwipe=0;
                             for (int i = 0; i < GeoObject.PRE_DEFINED_GEO_OBJECT_IMAGE_IDS.length; i++)
                                 mGeoObjects.add(new GeoObject(GeoObject.PRE_DEFINED_GEO_OBJECT_IMAGE_IDS[i]));
                         }
                         GeoObjectAdapter mAdapter = new GeoObjectAdapter(getApplicationContext(), mGeoObjects);         }
                 };
 
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
-        itemTouchHelper.attachToRecyclerView(mGeoRecyclerView);
+        ItemTouchHelper itemTouchHelperL = new ItemTouchHelper(simpleItemTouchCallbackL);
+        ItemTouchHelper itemTouchHelperR = new ItemTouchHelper(simpleItemTouchCallbackR);
+        itemTouchHelperL.attachToRecyclerView(mGeoRecyclerView);
+        itemTouchHelperR.attachToRecyclerView(mGeoRecyclerView);
     }
 
 }
